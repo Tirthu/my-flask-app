@@ -13,11 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up AWS CLI
-      uses: aws-actions/setup-cli@v2
-      with:
-        version: 'latest'
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
