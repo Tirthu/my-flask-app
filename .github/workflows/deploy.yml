@@ -13,26 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Log in to Amazon ECR
+    - name: Login to Amazon ECR
       run: |
         aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 024848477002.dkr.ecr.ap-south-1.amazonaws.com
 
     - name: Build Docker image
-      run: |
-        docker build -t my-flask-app .
+      run: docker build -t 024848477002.dkr.ecr.ap-south-1.amazonaws.com/my-flask-app:latest .
 
-    - name: Tag Docker image
-      run: |
-        docker tag my-flask-app:latest 024848477002.dkr.ecr.ap-south-1.amazonaws.com/my-flask-app:latest
-
-    - name: Push Docker image to ECR
-      run: |
-        docker push 024848477002.dkr.ecr.ap-south-1.amazonaws.com/my-flask-app:latest
+    - name: Push Docker image
+      run: docker push 024848477002.dkr.ecr.ap-south-1.amazonaws.com/my-flask-app:latest
 
     - name: Deploy to ECS
       run: |
-        ecs-deploy \
-          --cluster default \
-          --service-name my-flask-app-service \
-          --image 024848477002.dkr.ecr.ap-south-1.amazonaws.com/my-flask-app:latest \
-          --region ap-south-1
+        aws ecs update-service --cluster default --service my-flask-app-service --force-new-deployment
